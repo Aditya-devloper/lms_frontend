@@ -1,0 +1,48 @@
+import { api, publicApi } from "./api";
+
+// User services
+export const getOtp = (payload: any) => publicApi.post(`/user/getOtp`, payload);
+
+export const verifyOtp = (payload: any) => api.post(`/user/verifyOtp`, payload);
+
+export const verifyPin = (payload: any) => api.post(`/user/verifyPin`, payload);
+
+export const createAgent = (payload: any) =>
+  api.post(`/user/createAgent`, payload);
+
+export const getUserById = (payload: any) =>
+  api.post(`/user/getUserById`, payload);
+
+export const updateUser = (id: string, payload: any) =>
+  api.post(`/user/update/${id}`, payload);
+
+export const removeAgent = (id: string, payload: any) =>
+  api.post(`/user/removeAgent/${id}`, payload);
+
+// Business
+export const getBusiness = (payload: any) =>
+  api.post(`/business/getBusiness`, payload);
+
+export const createBusiness = (payload: any) =>
+  api.post(`/business/createBusiness`, payload);
+
+export const updateBusiness = (id: string, payload: any) =>
+  api.post(`/business/update/${id}`, payload);
+
+export const getBusinessById = (id: string, payload: any) =>
+  api.post(`/business/getBusiness/${id}`, payload);
+
+// Leads
+export const getLeads = (payload: any) => api.post(`/lead/getLeads`, payload);
+
+export const createLead = (payload: any) =>
+  api.post(`/lead/createLead`, payload);
+
+export const updateLead = (id: string, payload: any) =>
+  api.post(`/lead/update/${id}`, payload);
+
+export const getLeadById = (id: string, payload: any) =>
+  api.post(`/lead/getById/${id}`, payload);
+
+export const deleteLead = (id: string, payload: any) =>
+  api.post(`/lead/delete/${id}`, payload);
