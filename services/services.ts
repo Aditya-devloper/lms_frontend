@@ -1,7 +1,7 @@
-import { api, publicApi } from "./api";
+import { api } from "./api";
 
 // User services
-export const getOtp = (payload: any) => publicApi.post(`/user/getOtp`, payload);
+export const getOtp = (payload: any) => api.post(`/user/getOtp`, payload);
 
 export const verifyOtp = (payload: any) => api.post(`/user/verifyOtp`, payload);
 

@@ -5,10 +5,24 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-export const publicApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: false,
-});
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.log("Unauthorized - logging out");
+
+      // local cleanup
+      localStorage.removeItem("user");
+
+      // call logout API (to clear cookie server-side)
+      // await axios.post('/logout', {}, { withCredentials: true })
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 // api.interceptors.request.use((config) => {
 //   const token = localStorage.getItem("token");

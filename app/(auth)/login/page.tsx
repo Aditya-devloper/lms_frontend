@@ -51,9 +51,13 @@ export default function LoginPage() {
       const res = await verifyOtp({ email, otp });
       if (res.data.status) {
         toast.success(res.data.message);
-        // localStorage.setItem("token", res.data.response?.token);
-        localStorage.setItem("user", JSON.stringify(res.data.response));
-        router.replace("/dashboard");
+
+        if (res.data.hasBusiness) {
+          localStorage.setItem("user", JSON.stringify(res.data.response?.user));
+          router.replace("/dashboard");
+        } else {
+          router.replace("/setup-business");
+        }
       } else {
         toast.error(res.data.message);
       }
