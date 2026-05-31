@@ -52,7 +52,7 @@ export default function LoginPage() {
       if (res.data.status) {
         toast.success(res.data.message);
 
-        if (res.data.hasBusiness) {
+        if (res.data.response.hasBusiness) {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
           router.replace("/dashboard");
         } else {

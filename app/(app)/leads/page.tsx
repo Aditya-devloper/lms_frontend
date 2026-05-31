@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -18,117 +20,406 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-const leads = [
-  {
-    name: "Amit Sharma",
-    phone: "9876543210",
-    status: "Contacted",
-    date: "2026-02-01",
-  },
-  {
-    name: "Priya Singh",
-    phone: "9123456789",
-    status: "New",
-    date: "2026-02-02",
-  },
-  {
-    name: "Rahul Verma",
-    phone: "9988776655",
-    status: "Interested",
-    date: "2026-02-03",
-  },
-];
+import { useEffect, useState } from "react";
+import { getLeads } from "@/services/services";
+import Loading from "@/components/shared/loading";
+import moment from "moment";
+import { Edit, Eye, Filter, X, CalendarIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/app/(shared)/components/DatePicker";
+import { useRouter } from "next/navigation";
 
 const statusColors: Record<string, string> = {
-  New: "bg-blue-100 text-blue-700",
-  Contacted: "bg-yellow-100 text-yellow-700",
-  Interested: "bg-purple-100 text-purple-700",
-  Converted: "bg-green-100 text-green-700",
-  Lost: "bg-red-100 text-red-700",
+  new: "bg-blue-100 text-blue-700",
+  contacted: "bg-yellow-100 text-yellow-700",
+  interested: "bg-purple-100 text-purple-700",
+  "proposal-sent": "bg-indigo-100 text-indigo-700",
+  converted: "bg-green-100 text-green-700",
+  lost: "bg-red-100 text-red-700",
 };
 
 export default function LeadsPage() {
+  const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const [filters, setFilters] = useState({
+    status: "",
+    source: "",
+    date_type: "",
+    from: undefined as Date | undefined,
+    to: undefined as Date | undefined,
+  });
+
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // for filter count
+  const [appliedFilters, setAppliedFilters] = useState({
+    status: "",
+    source: "",
+    date_type: "",
+    from: undefined as Date | undefined,
+    to: undefined as Date | undefined,
+  });
+
+  const router = useRouter();
+
+  const fetchLeads = async (customFilters = filters, customSearch = search) => {
+    setLoading(true);
+
+    try {
+      const payload: any = {};
+      if (customSearch) payload.search = customSearch;
+      if (customFilters.status) payload.status = customFilters.status;
+      if (customFilters.source) payload.source = customFilters.source;
+      if (customFilters.date_type) payload.date_type = customFilters.date_type;
+      if (customFilters.date_type === "custom") {
+        if (customFilters.from) payload.from = customFilters.from;
+        if (customFilters.to) payload.to = customFilters.to;
+      }
+
+      const res = await getLeads(payload);
+      if (res.data.status) {
+        setLeads(res.data.response);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const value = search.trim();
+
+      if (value.length >= 2) {
+        fetchLeads();
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const clearFilters = async () => {
+    const resetFilters = {
+      status: "",
+      source: "",
+      date_type: "",
+      from: undefined,
+      to: undefined,
+    };
+
+    setFilters(resetFilters);
+    setAppliedFilters(resetFilters);
+    setSearch("");
+    setFilterOpen(false);
+
+    await fetchLeads(resetFilters, "");
+  };
+
+  const activeFiltersCount = [
+    appliedFilters.status,
+    appliedFilters.source,
+    appliedFilters.date_type,
+  ].filter(Boolean).length;
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Leads</h1>
-          <Link href="/leads/create" className="block sm:hidden">
-            <Button size={"sm"}>Create Lead</Button>
-          </Link>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-semibold">Leads</h1>
+              <Link href="/leads/create" className="block sm:hidden">
+                <Button size={"sm"}>Create Lead</Button>
+              </Link>
+            </div>
+            {/* Filters */}
+            <div className="flex gap-3 items-center">
+              <div className="relative w-full sm:w-72">
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by name, email or phone"
+                  className="pr-10"
+                />
+
+                {search && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch("");
+                      fetchLeads(filters, "");
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+
+              <Dialog open={filterOpen} onOpenChange={setFilterOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="relative">
+                    <div className="relative">
+                      <Filter className="h-4 w-4" />
+
+                      {activeFiltersCount > 0 && (
+                        <span className="absolute -top-2 -right-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[8px] text-white px-1">
+                          {activeFiltersCount}
+                        </span>
+                      )}
+                    </div>
+                    Filters
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Filters</DialogTitle>
+                  </DialogHeader>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Status */}
+                      <div>
+                        <Label>Status</Label>
+
+                        <Select
+                          value={filters.status}
+                          onValueChange={(value) =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              status: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Status" />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            <SelectItem value="new">New</SelectItem>
+                            <SelectItem value="contacted">Contacted</SelectItem>
+                            <SelectItem value="interested">
+                              Interested
+                            </SelectItem>
+                            <SelectItem value="converted">Converted</SelectItem>
+                            <SelectItem value="lost">Lost</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Source */}
+                      <div>
+                        <Label>Source</Label>
+                        <Select
+                          value={filters.source}
+                          onValueChange={(value) =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              source: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Source" />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            <SelectItem value="call">Call</SelectItem>
+                            <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                            <SelectItem value="email">Email</SelectItem>
+                            <SelectItem value="website">Website</SelectItem>
+                            <SelectItem value="facebook">Facebook</SelectItem>
+                            <SelectItem value="instagram">Instagram</SelectItem>
+                            <SelectItem value="referral">Referral</SelectItem>
+                            <SelectItem value="others">Others</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Date */}
+                      <div>
+                        <Label>Date</Label>
+
+                        <Select
+                          value={filters.date_type}
+                          onValueChange={(value) =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              date_type: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Date Filter" />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            <SelectItem value="today">Today</SelectItem>
+                            <SelectItem value="last30days">
+                              Last 30 Days
+                            </SelectItem>
+                            <SelectItem value="last60days">
+                              Last 60 Days
+                            </SelectItem>
+                            <SelectItem value="custom">Custom</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {filters.date_type === "custom" && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label>From</Label>
+                          <DatePicker
+                            value={filters.from}
+                            onChange={(date) =>
+                              setFilters((prev) => ({
+                                ...prev,
+                                from: date,
+                                to: undefined,
+                              }))
+                            }
+                          />
+                        </div>
+
+                        <div>
+                          <Label>To</Label>
+                          <DatePicker
+                            disabled={!filters.from}
+                            minDate={filters.from}
+                            value={filters.to}
+                            onChange={(date) =>
+                              setFilters((prev) => ({
+                                ...prev,
+                                to: date,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-end gap-3 pt-2">
+                      <Button
+                        variant="outline"
+                        size={"sm"}
+                        onClick={clearFilters}
+                      >
+                        Clear
+                      </Button>
+
+                      <Button
+                        size={"sm"}
+                        onClick={() => {
+                          setAppliedFilters(filters);
+                          fetchLeads();
+                          setFilterOpen(false);
+                        }}
+                      >
+                        Apply Filters
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Link href="/leads/create" className="hidden sm:block">
+                <Button size="sm">Create Lead</Button>
+              </Link>
+            </div>
+          </div>
+          <Card>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Source</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Follow Up Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {leads.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={10} className="text-center pt-6">
+                        No leads found.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <>
+                      {leads.map((lead: any) => (
+                        <TableRow
+                          key={lead._id}
+                          onClick={() => router.push(`/leads/${lead._id}`)}
+                          className="cursor-pointer hover:bg-muted"
+                        >
+                          <TableCell>{lead.name}</TableCell>
+
+                          <TableCell>{lead.phone || "-"}</TableCell>
+                          <TableCell>{lead.email || "-"}</TableCell>
+
+                          <TableCell className="capitalize">
+                            {lead.source || "-"}
+                          </TableCell>
+
+                          <TableCell>
+                            <Badge
+                              className={`capitalize ${statusColors[lead.status] || ""}`}
+                            >
+                              {lead.status}
+                            </Badge>
+                          </TableCell>
+
+                          <TableCell>
+                            {moment(lead.follow_up_date).format("DD MMM, YYYY")}
+                          </TableCell>
+
+                          <TableCell className="flex gap-2">
+                            <Link href={`/leads/${lead._id}`}>
+                              <Button variant={"outline"} size={"icon-xs"}>
+                                <Eye className="h-5 w-5" />
+                              </Button>
+                            </Link>
+                            <Link
+                              href={`/leads/edit/${lead._id}`}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Button variant={"outline"} size={"icon-xs"}>
+                                <Edit className="h-5 w-5 text-blue-500" />
+                              </Button>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex gap-3 items-center">
-          <Select>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="New">New</SelectItem>
-              <SelectItem value="Contacted">Contacted</SelectItem>
-              <SelectItem value="Interested">Interested</SelectItem>
-              <SelectItem value="Converted">Converted</SelectItem>
-              <SelectItem value="Lost">Lost</SelectItem>
-            </SelectContent>
-          </Select>
-          <Input
-            className="w-full sm:w-64"
-            placeholder="Search by name or phone"
-          />
-          <Link href="/leads/create" className="hidden sm:block">
-            <Button size={"sm"}>Create Lead</Button>
-          </Link>
-        </div>
-      </div>
-      <Card>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Follow-up Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {leads.map((lead, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>{lead.name}</TableCell>
-
-                  <TableCell>{lead.phone}</TableCell>
-
-                  <TableCell>
-                    <Badge className={statusColors[lead.status] || ""}>
-                      {lead.status}
-                    </Badge>
-                  </TableCell>
-
-                  <TableCell>{lead.date}</TableCell>
-
-                  <TableCell className="flex gap-2">
-                    <Link
-                      href={`/leads/${idx}`}
-                      className="text-primary underline"
-                    >
-                      View
-                    </Link>
-                    <Link
-                      href={`/leads/${idx}/edit`}
-                      className="text-muted-foreground underline"
-                    >
-                      Edit
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+      )}
+    </>
   );
 }

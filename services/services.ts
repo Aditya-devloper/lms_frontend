@@ -38,8 +38,11 @@ export const getLeads = (payload: any) => api.post(`/lead/getLeads`, payload);
 export const createLead = (payload: any) =>
   api.post(`/lead/createLead`, payload);
 
-export const updateLead = (id: string, payload: any) =>
-  api.post(`/lead/update/${id}`, payload);
+export const updateLead = (payload: any) =>
+  api.post(`/lead/updateLead`, payload);
+
+export const getLeadActivity = (payload: any) =>
+  api.post(`/lead/getLeadActivity`, payload);
 
 export const getLeadById = (id: string, payload: any) =>
   api.post(`/lead/getById/${id}`, payload);
