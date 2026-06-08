@@ -4,6 +4,7 @@ import {
   ClipboardList,
   Briefcase,
   UserCircle,
+  Building2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ const navItems = [
   { name: "Leads", href: "/leads", icon: ClipboardList },
   { name: "Agents", href: "/agents", icon: Briefcase },
   { name: "Profile", href: "/profile", icon: UserCircle },
+  { name: "Business", href: "/business", icon: Building2 },
   { name: "Logout", href: "/logout", icon: LogOut },
 ];
 

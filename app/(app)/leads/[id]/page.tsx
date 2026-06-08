@@ -312,12 +312,7 @@ const LeadDetail = () => {
             {lead.email && (
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={`mailto:${lead.email}`}
-                  className="text-sm text-primary hover:underline"
-                >
-                  {lead.email}
-                </a>
+                <span className="text-sm">{lead.email}</span>
               </div>
             )}
             {lead.phone && (
