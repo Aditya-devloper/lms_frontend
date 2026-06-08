@@ -1,4 +1,3 @@
-import PixelBlast from "@/components/background";
 import { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {

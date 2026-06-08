@@ -279,7 +279,7 @@ const LeadDetail = () => {
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <ArrowLeft
               className="h-4.5 w-4.5 mt-1 cursor-pointer"
-              onClick={() => router.push("/leads")}
+              onClick={() => router.back()}
             />
             Lead Details
           </h1>

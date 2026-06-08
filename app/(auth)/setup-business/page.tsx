@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { businessTypes } from "@/data";
 import { createBusiness } from "@/services/services";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -114,13 +115,11 @@ export default function BusinessSetup() {
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="sole_proprietorship">
-                Sole Proprietorship
-              </SelectItem>
-              <SelectItem value="partnership">Partnership</SelectItem>
-              <SelectItem value="llc">LLC</SelectItem>
-              <SelectItem value="corporation">Corporation</SelectItem>
-              <SelectItem value="nonprofit">Non-Profit</SelectItem>
+              {businessTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

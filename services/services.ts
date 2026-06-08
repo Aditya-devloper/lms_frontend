@@ -7,14 +7,18 @@ export const verifyOtp = (payload: any) => api.post(`/user/verifyOtp`, payload);
 
 export const verifyPin = (payload: any) => api.post(`/user/verifyPin`, payload);
 
-export const createAgent = (payload: any) =>
-  api.post(`/user/createAgent`, payload);
-
 export const getUserById = (payload: any) =>
   api.post(`/user/getUserById`, payload);
 
 export const updateUser = (id: string, payload: any) =>
   api.post(`/user/update/${id}`, payload);
+
+export const logoutUser = (payload: any) =>
+  api.post(`/user/logoutUser`, payload);
+
+// agent
+export const createAgent = (payload: any) =>
+  api.post(`/user/createAgent`, payload);
 
 export const removeAgent = (id: string, payload: any) =>
   api.post(`/user/removeAgent/${id}`, payload);
@@ -26,8 +30,8 @@ export const getBusiness = (payload: any) =>
 export const createBusiness = (payload: any) =>
   api.post(`/business/createBusiness`, payload);
 
-export const updateBusiness = (id: string, payload: any) =>
-  api.post(`/business/update/${id}`, payload);
+export const updateBusiness = (payload: any) =>
+  api.post(`/business/updateBusiness`, payload);
 
 export const getBusinessById = (id: string, payload: any) =>
   api.post(`/business/getBusiness/${id}`, payload);
@@ -49,3 +53,7 @@ export const getLeadById = (id: string, payload: any) =>
 
 export const deleteLead = (id: string, payload: any) =>
   api.post(`/lead/delete/${id}`, payload);
+
+// dasboard
+export const getDashboardData = (payload: any) =>
+  api.post(`/dashboard/getDashboardData`, payload);

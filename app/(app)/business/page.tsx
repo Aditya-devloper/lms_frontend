@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
   Building,
@@ -16,28 +17,101 @@ import {
   Award,
   Users,
   TrendingUp,
+  Save,
+  X,
+  Loader2,
 } from "lucide-react";
-import Link from "next/link";
 import { Label } from "@/components/ui/label";
-import { getBusiness, getUserById } from "@/services/services";
+import { getBusiness, updateBusiness } from "@/services/services";
 import moment from "moment";
 import Loading from "@/components/shared/loading";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { businessTypes } from "@/data";
 
 export default function Business() {
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const [formData, setFormData] = useState({
+    business_name: "",
+    business_type: "",
+    address: "",
+    business_email: "",
+    business_phone: "",
+  });
 
   const fetchBusiness = async () => {
     try {
       const res = await getBusiness({});
       if (res.data.status) {
-        setBusiness(res.data.response?.[0]);
+        const businessData = res.data.response?.[0];
+        setBusiness(businessData);
+        setFormData({
+          business_name: businessData?.business_name || "",
+          business_type: businessData?.business_type || "",
+          address: businessData?.address || "",
+          business_email: businessData?.business_email || "",
+          business_phone: businessData?.business_phone || "",
+        });
       }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUpdateBusiness = async () => {
+    setSaving(true);
+    try {
+      const payload = {
+        id: business?._id,
+        business_name: formData.business_name,
+        business_type: formData.business_type,
+        address: formData.address,
+        business_email: formData.business_email,
+        business_phone: formData.business_phone,
+      };
+      const res = await updateBusiness(payload);
+      if (res.data.status) {
+        toast.success(res.data.message || "Business updated successfully");
+        await fetchBusiness();
+        setIsEditMode(false);
+      } else {
+        toast.error(res.data.message || "Failed to update business");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const cancelEdit = () => {
+    setIsEditMode(false);
+    // Reset form data to original business data
+    setFormData({
+      business_name: business?.business_name || "",
+      business_type: business?.business_type || "",
+      address: business?.address || "",
+      business_email: business?.business_email || "",
+      business_phone: business?.business_phone || "",
+    });
   };
 
   useEffect(() => {
@@ -55,16 +129,41 @@ export default function Business() {
             <div>
               <h1 className="text-2xl font-semibold">Business</h1>
             </div>
-            <Link href="/profile/edit">
-              <Button size="sm" className="w-full sm:w-auto">
-                <Edit className="h-4 w-4" />
-                Edit
+            {!isEditMode ? (
+              <Button size="sm" onClick={() => setIsEditMode(true)}>
+                <Edit className="h-4 w-4 mr-1" />
+                Edit Business
               </Button>
-            </Link>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={cancelEdit}
+                  disabled={saving}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleUpdateBusiness}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>Save Changes</>
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="space-y-6">
-            {/* Business Information Card - Third */}
+            {/* Business Information Card */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -74,68 +173,136 @@ export default function Business() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Business Name */}
                   <div className="space-y-2">
                     <Label className="text-xs font-medium uppercase text-muted-foreground">
                       Business Name
                     </Label>
-                    <div className="rounded-lg bg-muted/50 p-2">
-                      <p className="text-sm font-medium">
-                        {business?.business_name || "Not set"}
-                      </p>
-                    </div>
+                    {isEditMode ? (
+                      <Input
+                        value={formData.business_name}
+                        onChange={(e) =>
+                          handleChange("business_name", e.target.value)
+                        }
+                        placeholder="Enter business name"
+                      />
+                    ) : (
+                      <div className="rounded-lg bg-muted/50 p-2">
+                        <p className="text-sm font-medium">
+                          {business?.business_name || "Not set"}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
+                  {/* Business Type */}
                   <div className="space-y-2">
                     <Label className="text-xs font-medium uppercase text-muted-foreground">
                       Business Type
                     </Label>
-                    <div className="rounded-lg bg-muted/50 p-2">
-                      <p className="text-sm capitalize">
-                        {business?.business_type || "Not set"}
-                      </p>
-                    </div>
+                    {isEditMode ? (
+                      <Select
+                        value={formData.business_type}
+                        onValueChange={(value) =>
+                          handleChange("business_type", value)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select business type" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          {businessTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="rounded-lg bg-muted/50 p-2">
+                        <p className="text-sm capitalize">
+                          {business?.business_type || "Not set"}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  {business?.address && (
-                    <div className="space-y-2 sm:col-span-2">
-                      <Label className="text-xs font-medium uppercase text-muted-foreground">
-                        Address
-                      </Label>
-                      <div className="flex items-start gap-2 rounded-lg bg-muted/50 p-2">
-                        <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{business.address}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {business?.business_email && (
-                    <div className="space-y-2">
-                      <Label className="text-xs font-medium uppercase text-muted-foreground">
-                        Business Email
-                      </Label>
+                  {/* Business Email */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium uppercase text-muted-foreground">
+                      Business Email
+                    </Label>
+                    {isEditMode ? (
+                      <Input
+                        type="email"
+                        value={formData.business_email}
+                        onChange={(e) =>
+                          handleChange("business_email", e.target.value)
+                        }
+                        placeholder="Enter business email"
+                      />
+                    ) : (
                       <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{business.business_email}</p>
+                        <p className="text-sm">
+                          {business?.business_email || "Not set"}
+                        </p>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
-                  {business?.business_phone && (
-                    <div className="space-y-2">
-                      <Label className="text-xs font-medium uppercase text-muted-foreground">
-                        Business Phone
-                      </Label>
+                  {/* Business Phone */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium uppercase text-muted-foreground">
+                      Business Phone
+                    </Label>
+                    {isEditMode ? (
+                      <Input
+                        type="tel"
+                        value={formData.business_phone}
+                        onChange={(e) =>
+                          handleChange("business_phone", e.target.value)
+                        }
+                        placeholder="Enter business phone"
+                      />
+                    ) : (
                       <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{business.business_phone}</p>
+                        <p className="text-sm">
+                          {business?.business_phone || "Not set"}
+                        </p>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+
+                  {/* Address */}
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label className="text-xs font-medium uppercase text-muted-foreground">
+                      Address
+                    </Label>
+                    {isEditMode ? (
+                      <Textarea
+                        value={formData.address}
+                        onChange={(e) =>
+                          handleChange("address", e.target.value)
+                        }
+                        placeholder="Enter business address"
+                      />
+                    ) : (
+                      <div className="flex items-start gap-2 rounded-lg bg-muted/50 p-2">
+                        <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm">
+                          {business?.address || "Not set"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Subscription Plan Card */}
+            {/* Subscription Plan Card - Non-editable */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">

@@ -15,6 +15,8 @@ export const config = {
     "/dashboard/:path*",
     "/leads/:path*",
     "/profile/:path*",
+    "/business/:path*",
+    "/agents/:path*",
     "/setup-business",
   ],
 };
