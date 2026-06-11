@@ -14,8 +14,6 @@ import {
   CheckCircle,
   AlertCircle,
   Edit,
-  Save,
-  X,
   Upload,
   Loader2,
 } from "lucide-react";
@@ -225,6 +223,8 @@ export default function ProfilePage() {
     }
     if (user?.image) {
       return `${MEDIA_URL}/users/${user.image}`;
+    } else if (user?.profilePic) {
+      return user.profilePic;
     }
     return undefined;
   };

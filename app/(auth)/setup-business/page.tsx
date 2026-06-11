@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { businessTypes } from "@/data";
 import { createBusiness } from "@/services/services";
 import { useRouter } from "next/navigation";
@@ -20,8 +19,6 @@ import { toast } from "sonner";
 interface FormData {
   business_name: string;
   business_type: string;
-  image: string;
-  address: string;
   business_email: string;
   business_phone: string;
 }
@@ -31,8 +28,6 @@ export default function BusinessSetup() {
   const [formData, setFormData] = useState<FormData>({
     business_name: "",
     business_type: "",
-    image: "",
-    address: "",
     business_email: "",
     business_phone: "",
   });
@@ -78,11 +73,10 @@ export default function BusinessSetup() {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 ">
-      <div className="p-6 border-b border-gray-200 ">
-        <h1 className="text-2xl font-semibold text-gray-900">Business Setup</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Enter your business information
-        </p>
+      <div className="px-6 pb-0 pt-4 border-gray-200 ">
+        <h1 className="text-2xl text-center font-semibold text-gray-900">
+          Business Setup
+        </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -124,29 +118,6 @@ export default function BusinessSetup() {
           </Select>
         </div>
 
-        {/* Image URL */}
-        <div>
-          <Label>Logo URL</Label>
-          <Input
-            type="url"
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-            placeholder="https://example.com/logo.png"
-          />
-        </div>
-
-        {/* Address */}
-        <div>
-          <Label>Address</Label>
-          <Textarea
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Enter business address"
-          />
-        </div>
-
         {/* Email & Phone - 2 columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -173,24 +144,24 @@ export default function BusinessSetup() {
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-3 pt-4">
-          <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Save Business"}
-          </Button>
+        <div className="flex gap-3 pt-4 justify-end">
           <Button
             type="button"
+            size={"sm"}
+            variant={"outline"}
             onClick={() =>
               setFormData({
                 business_name: "",
                 business_type: "",
-                image: "",
-                address: "",
                 business_email: "",
                 business_phone: "",
               })
             }
           >
             Reset
+          </Button>
+          <Button type="submit" disabled={loading} size={"sm"}>
+            {loading ? "Saving..." : "Save Business"}
           </Button>
         </div>
       </form>

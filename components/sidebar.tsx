@@ -11,7 +11,7 @@ import {
   Building2,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -29,6 +29,8 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const router = useRouter();
+  const pathName = usePathname();
+
   const [open, setOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -49,17 +51,23 @@ export function Sidebar({ onNavigate }: SidebarProps) {
     <>
       <aside className="flex flex-col py-2 px-4 h-full overflow-y-auto">
         <nav className="flex flex-col gap-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={onNavigate}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 transition"
-            >
-              <item.icon className="w-5 h-5" />
-              <span>{item.name}</span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const active =
+              pathName === item.href || pathName.startsWith(item.href + "/");
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onNavigate}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition
+                        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
 
           <button
             onClick={() => setOpen(true)}

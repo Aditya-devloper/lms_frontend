@@ -168,11 +168,8 @@ export default function DashboardPage() {
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12 text-center">
                   <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     No follow-ups scheduled for today
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Check back later for upcoming follow-ups
                   </p>
                 </CardContent>
               </Card>

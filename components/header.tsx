@@ -81,7 +81,11 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           <DropdownMenuTrigger asChild>
             <Avatar className="h-8 w-8 object-cover shadow-xs">
               <AvatarImage
-                src={`${MEDIA_URL}/users/${user?.image}`}
+                src={
+                  user?.image
+                    ? `${MEDIA_URL}/users/${user.image}`
+                    : user?.profilePic
+                }
                 alt={user?.name || "User"}
               />
               <AvatarFallback className="bg-primary text-sm font-bold text-primary-foreground">
