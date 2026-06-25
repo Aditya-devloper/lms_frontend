@@ -235,13 +235,13 @@ export default function ProfilePage() {
         <Loading />
       ) : (
         <div className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-4 items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold">Profile</h1>
             </div>
             {!isEditMode ? (
               <Button size="sm" onClick={() => setIsEditMode(true)}>
-                <Edit className="h-4 w-4 mr-1" />
+                <Edit className="h-4 w-4" />
                 Edit Profile
               </Button>
             ) : (

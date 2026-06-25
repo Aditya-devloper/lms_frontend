@@ -67,11 +67,21 @@ export function Header({ onToggleSidebar }: HeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b flex items-center justify-between px-3 sm:px-6">
-        <div className="flex items-center gap-5 sm:gap-15">
-          <h1 className="text-2xl mb-1 font-semibold tracking-tight text-blue-500">
-            Lead Manager
-          </h1>
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white border-b flex items-center justify-between px-3 sm:px-6">
+        <div className="flex items-center gap-5 sm:gap-20">
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={() => router.push("/dashboard")}
+          >
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-12 w-12 object-contain"
+            />
+            <h1 className="text-2xl pb-1 font-semibold tracking-tight text-[#026af9]">
+              Lumio
+            </h1>
+          </div>
           <Button variant={"ghost"} size={"icon"} onClick={onToggleSidebar}>
             <Menu className="w-5 h-5" />
           </Button>

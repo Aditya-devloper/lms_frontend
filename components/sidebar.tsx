@@ -60,8 +60,8 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 onClick={onNavigate}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition
-                        ${active ? "bg-gray-200" : "hover:bg-gray-100"}`}
+                className={` flex items-center gap-3 px-3 py-2 rounded-md font-medium transition
+                        ${active ? "bg-blue-50" : "hover:bg-blue-50"}`}
               >
                 <item.icon className="w-5 h-5" />
                 <span>{item.name}</span>
@@ -71,7 +71,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
           <button
             onClick={() => setOpen(true)}
-            className="flex items-center cursor-pointer gap-3 px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 transition w-full text-left text-red-500"
+            className="flex items-center cursor-pointer gap-3 px-3 py-2 rounded-md text-base font-medium hover:bg-blue-50 transition w-full text-left text-red-500"
           >
             <LogOut className="w-5 h-5" />
             <span>Logout</span>

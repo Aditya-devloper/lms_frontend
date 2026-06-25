@@ -23,7 +23,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-16 left-0 z-40
+          fixed top-14 left-0 z-40
           h-[calc(100vh-4rem)]
           w-60 bg-white border-r
           transition-transform duration-300
@@ -50,7 +50,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Main content */}
       <main
         className={`
-        p-3 pt-19 sm:p-6 sm:pt-22 transition-all duration-300
+        p-3 pt-17 sm:p-6 sm:pt-18 transition-all duration-300
           ${sidebarOpen ? "lg:ml-60" : "lg:ml-0"}
         `}
       >

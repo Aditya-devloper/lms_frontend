@@ -157,9 +157,19 @@ export default function LeadForm() {
         <Loading />
       ) : (
         <div>
-          <h1 className="text-2xl font-semibold mb-4">
-            {id ? "Edit" : "Create"} Lead
-          </h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold">
+              {id ? "Edit" : "Create"} Lead
+            </h1>
+            {!id && (
+              <Button
+                size={"sm"}
+                onClick={() => router.push("/leads/bulk-upload")}
+              >
+                Bulk Upload
+              </Button>
+            )}
+          </div>
           <Card>
             <CardContent>
               <form onSubmit={handleSubmit}>

@@ -125,7 +125,7 @@ export default function Business() {
       ) : (
         <div className="space-y-6">
           {/* Header Section */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-4 items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold">Business</h1>
             </div>
@@ -303,7 +303,7 @@ export default function Business() {
             </Card>
 
             {/* Subscription Plan Card - Non-editable */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <CreditCard className="h-5 w-5" />
@@ -380,7 +380,6 @@ export default function Business() {
                   )}
                 </div>
 
-                {/* Pro Plan Benefits */}
                 {business?.plan?.name === "pro" && (
                   <div className="mt-4 rounded-lg border border-green-200 bg-green-50/30 p-4">
                     <h4 className="mb-3 text-sm font-semibold text-green-700 flex items-center gap-2">
@@ -416,7 +415,7 @@ export default function Business() {
                   </div>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       )}

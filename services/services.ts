@@ -54,6 +54,12 @@ export const updateLead = (payload: any) =>
 export const getLeadActivity = (payload: any) =>
   api.post(`/lead/getLeadActivity`, payload);
 
+export const uploadLeads = (payload: any) =>
+  api.post(`/lead/uploadLeads`, payload);
+
+export const exportLeads = (payload: any) =>
+  api.post(`/lead/exportLeads`, payload, { responseType: "blob" });
+
 export const getLeadById = (id: string, payload: any) =>
   api.post(`/lead/getById/${id}`, payload);
 

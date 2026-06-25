@@ -21,10 +21,10 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { getLeads } from "@/services/services";
+import { exportLeads, getLeads } from "@/services/services";
 import Loading from "@/components/shared/loading";
 import moment from "moment";
-import { Edit, Eye, Filter, X, CalendarIcon } from "lucide-react";
+import { Edit, Eye, Filter, X, CalendarIcon, Download } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/app/(shared)/components/DatePicker";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
@@ -49,6 +50,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   const [filters, setFilters] = useState({
     status: "",
@@ -89,6 +91,11 @@ export default function LeadsPage() {
       if (res.data.status) {
         setLeads(res.data.response);
       }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error?.response?.data?.message || error?.message || "Network error",
+      );
     } finally {
       setLoading(false);
     }
@@ -133,6 +140,57 @@ export default function LeadsPage() {
     fetchLeads();
   }, []);
 
+  const handleExportLead = async () => {
+    setIsExporting(true);
+
+    try {
+      const payload: any = {};
+      if (search.trim()) payload.search = search.trim();
+      if (appliedFilters.status) payload.status = appliedFilters.status;
+      if (appliedFilters.source) payload.source = appliedFilters.source;
+
+      if (appliedFilters.date_type)
+        payload.date_type = appliedFilters.date_type;
+
+      if (appliedFilters.date_type === "custom") {
+        if (appliedFilters.from) payload.from = appliedFilters.from;
+        if (appliedFilters.to) payload.to = appliedFilters.to;
+      }
+
+      const res = await exportLeads(payload);
+      console.log("exportLeads", res);
+
+      const blob = new Blob([res.data], {
+        type: "text/csv;charset=utf-8;",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `leads_${moment().format("YYYYMMDD_HHmmss")}.csv`,
+      );
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error: any) {
+      console.log(error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to export leads, Please try later",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -147,7 +205,7 @@ export default function LeadsPage() {
               </Link>
             </div>
             {/* Filters */}
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-center flex-wrap sm:flex-nowrap">
               <div className="relative w-full sm:w-72">
                 <Input
                   value={search}
@@ -338,6 +396,17 @@ export default function LeadsPage() {
                   </div>
                 </DialogContent>
               </Dialog>
+
+              <Button
+                size="sm"
+                type="button"
+                onClick={handleExportLead}
+                disabled={isExporting}
+                variant={"outline"}
+              >
+                <Download className="h-5 w-5" />
+                {isExporting ? "Exporting..." : "Export"}
+              </Button>
 
               <Link href="/leads/create" className="hidden sm:block">
                 <Button size="sm">Create Lead</Button>
