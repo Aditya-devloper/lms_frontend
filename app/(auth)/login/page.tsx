@@ -30,7 +30,9 @@ export default function LoginPage() {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
           router.replace("/dashboard");
         } else {
-          router.replace("/setup-business");
+          setTimeout(() => {
+            window.location.href = "/setup-business";
+          }, 500);
         }
       } else {
         toast.error(res.data.message);
@@ -55,7 +57,9 @@ export default function LoginPage() {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
           router.replace("/dashboard");
         } else {
-          router.replace("/setup-business");
+          setTimeout(() => {
+            window.location.href = "/setup-business";
+          }, 500);
         }
       } else {
         toast.error(res.data.message);
