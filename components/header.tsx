@@ -79,7 +79,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
               className="h-12 w-12 object-contain"
             />
             <h1 className="text-2xl pb-1 font-semibold tracking-tight text-[#026af9]">
-              Lumio
+              Leado
             </h1>
           </div>
           <Button variant={"ghost"} size={"icon"} onClick={onToggleSidebar}>

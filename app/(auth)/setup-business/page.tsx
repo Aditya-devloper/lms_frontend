@@ -1,17 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/auth/button";
+import { Input } from "@/components/auth/input";
+import { Label } from "@/components/auth/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/auth/select";
 import { businessTypes } from "@/data";
 import { createBusiness } from "@/services/services";
+import { Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -72,18 +73,29 @@ export default function BusinessSetup() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 ">
-      <div className="px-6 pb-0 pt-4 border-gray-200 ">
-        <h1 className="text-2xl text-center font-semibold text-gray-900">
-          Business Setup
+    <div className="w-full max-w-lg glass-strong rounded-2xl relative">
+      <div
+        className="absolute -top-20 -left-20 w-56 h-56 rounded-full opacity-20 blur-3xl pointer-events-none"
+        style={{ background: "var(--color-indigo)" }}
+      />
+
+      <div className="px-6 pt-7 pb-2 relative text-center">
+        <div className="w-11 h-11 rounded-xl bg-[var(--color-coral-soft)] flex items-center justify-center mx-auto mb-3">
+          <Building2 size={20} className="text-[var(--color-coral)]" />
+        </div>
+        <h1 className="text-xl font-display font-semibold text-[var(--color-text-primary)]">
+          Set up your business
         </h1>
+        <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+          This is what your leads will be organized under
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="p-6 space-y-5 relative">
         {/* Business Name */}
         <div>
           <Label>
-            Business Name <span className="text-red-500">*</span>
+            Business Name <span className="text-[var(--color-coral)]">*</span>
           </Label>
           <Input
             type="text"
@@ -104,7 +116,7 @@ export default function BusinessSetup() {
               setFormData((prev) => ({ ...prev, business_type: value }))
             }
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger>
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
 
@@ -144,23 +156,8 @@ export default function BusinessSetup() {
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-3 pt-4 justify-end">
-          <Button
-            type="button"
-            size={"sm"}
-            variant={"outline"}
-            onClick={() =>
-              setFormData({
-                business_name: "",
-                business_type: "",
-                business_email: "",
-                business_phone: "",
-              })
-            }
-          >
-            Reset
-          </Button>
-          <Button type="submit" disabled={loading} size={"sm"}>
+        <div className="flex gap-3 pt-3 justify-end">
+          <Button type="submit" disabled={loading} size="sm">
             {loading ? "Saving..." : "Save Business"}
           </Button>
         </div>

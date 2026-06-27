@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Space_Grotesk, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import Providers from "./providers";
+import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "LMS App",
-  description: "A Lead Management System For Managing Leads Efficiently",
+  title: "Leado — Never lose a lead to a forgotten follow-up",
+  description:
+    "Leado helps small sales teams track leads, set follow-up reminders, and close more deals — without the spreadsheet chaos.",
 };
 
 export default function RootLayout({
@@ -26,9 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${inter.className} antialiased`}>
+        <div className="ambient-glow" />
+        <div className="noise-overlay" />
         <Providers>{children}</Providers>
         <Toaster position="top-right" richColors />
       </body>
