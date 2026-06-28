@@ -115,10 +115,16 @@ export default function LeadForm() {
     }
     try {
       let res;
+      const payload = {
+        ...form,
+        follow_up_date: form.follow_up_date
+          ? form.follow_up_date.toLocaleDateString("en-CA")
+          : null,
+      };
       if (id) {
-        res = await updateLead({ ...form, id });
+        res = await updateLead({ ...payload, id });
       } else {
-        res = await createLead(form);
+        res = await createLead(payload);
       }
       if (res.data?.status) {
         toast.success(res.data?.message);
