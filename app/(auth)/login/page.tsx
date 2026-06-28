@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/auth/card";
 import { Input } from "@/components/auth/input";
 import { Button } from "@/components/auth/button";
@@ -17,29 +17,42 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, [router]);
+
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (password.length != 6)
+      return toast.error("Password must be at least 6 characters");
 
     try {
       setLoading(true);
       const res = await createAccount({ email, password });
       if (res.data.status) {
         toast.success(res.data.message);
+        localStorage.setItem("token", res.data.response?.token);
 
         if (res.data.response.hasBusiness) {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
           router.replace("/dashboard");
         } else {
-          setTimeout(() => {
-            window.location.href = "/setup-business";
-          }, 500);
+          router.replace("/setup-business");
         }
       } else {
         toast.error(res.data.message);
       }
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || err?.message);
+      toast.error(
+        err.response?.data?.response?.[0]?.msg ||
+          err.response?.data?.message ||
+          err?.message,
+      );
     } finally {
       setLoading(false);
     }
@@ -52,14 +65,13 @@ export default function LoginPage() {
       const res = await googleLogin({ token });
       if (res.data.status) {
         toast.success(res.data.message);
+        localStorage.setItem("token", res.data.response?.token);
 
         if (res.data.response.hasBusiness) {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
           router.replace("/dashboard");
         } else {
-          setTimeout(() => {
-            window.location.href = "/setup-business";
-          }, 500);
+          router.replace("/setup-business");
         }
       } else {
         toast.error(res.data.message);

@@ -3,8 +3,7 @@ import { api } from "./api";
 // User services
 export const getOtp = (payload: any) => api.post(`/user/getOtp`, payload);
 
-export const createAccount = (payload: any) =>
-  api.post(`/user/createAccount`, payload);
+export const createAccount = (payload: any) => api.post(`/user/login`, payload);
 
 export const googleLogin = (payload: any) =>
   api.post(`/user/googleLogin`, payload);

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
+  // const token = request.cookies.get("token")?.value;
+  const token = localStorage.getItem("token");
 
   console.log("PATH:", request.nextUrl.pathname, "TOKEN:", !!token);
 

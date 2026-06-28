@@ -3,9 +3,24 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
+import { useRouter } from "next/navigation";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!token) {
+      router.replace("/login");
+    }
+
+    if (!user) {
+      router.replace("/setup-business");
+    }
+  }, []);
 
   useEffect(() => {
     if (window.innerWidth >= 1024) {
