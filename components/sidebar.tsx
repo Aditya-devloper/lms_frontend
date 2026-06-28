@@ -33,18 +33,26 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
   const [open, setOpen] = useState(false);
 
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await logoutUser({});
+  //     if (res.data.status) {
+  //       localStorage.removeItem("user");
+  //       router.push("/login");
+  //       toast.success("Logged out successfully");
+  //     }
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //     toast.error("Logout failed. Please try again.");
+  //   }
+  // };
+
   const handleLogout = async () => {
-    try {
-      const res = await logoutUser({});
-      if (res.data.status) {
-        localStorage.removeItem("user");
-        router.push("/login");
-        toast.success("Logged out successfully");
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Logout failed. Please try again.");
-    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.href = "/";
+    toast.success("Logged out successfully");
   };
 
   return (
