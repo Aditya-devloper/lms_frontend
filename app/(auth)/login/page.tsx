@@ -39,7 +39,7 @@ export default function LoginPage() {
 
         if (res.data.response.hasBusiness) {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
-          router.replace("/dashboard");
+          window.location.href = "/dashboard";
         } else {
           router.replace("/setup-business");
         }
@@ -69,7 +69,7 @@ export default function LoginPage() {
 
         if (res.data.response.hasBusiness) {
           localStorage.setItem("user", JSON.stringify(res.data.response?.user));
-          router.replace("/dashboard");
+          window.location.href = "/dashboard";
         } else {
           router.replace("/setup-business");
         }

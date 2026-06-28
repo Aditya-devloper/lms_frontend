@@ -59,7 +59,7 @@ export default function BusinessSetup() {
           "user",
           JSON.stringify(res.data.response?.updatedUser),
         );
-        router.replace("/dashboard");
+        window.location.href = "/dashboard";
       }
     } catch (error: any) {
       toast.error(

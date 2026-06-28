@@ -466,7 +466,11 @@ export default function LeadsPage() {
 
                           <TableCell className="flex gap-2">
                             <Link href={`/leads/${lead._id}`}>
-                              <Button variant={"outline"} size={"icon-xs"}>
+                              <Button
+                                variant={"outline"}
+                                size={"icon-xs"}
+                                title="view"
+                              >
                                 <Eye className="h-5 w-5" />
                               </Button>
                             </Link>
@@ -474,7 +478,11 @@ export default function LeadsPage() {
                               href={`/leads/edit/${lead._id}`}
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <Button variant={"outline"} size={"icon-xs"}>
+                              <Button
+                                variant={"outline"}
+                                size={"icon-xs"}
+                                title="edit"
+                              >
                                 <Edit className="h-5 w-5 text-blue-500" />
                               </Button>
                             </Link>

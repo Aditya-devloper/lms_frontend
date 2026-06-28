@@ -4,26 +4,9 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import {
-  Building,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  CreditCard,
-  CheckCircle,
-  Edit,
-  Award,
-  Users,
-  TrendingUp,
-  Save,
-  X,
-  Loader2,
-} from "lucide-react";
+import { Building, Mail, Phone, MapPin, Edit, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { getBusiness, updateBusiness } from "@/services/services";
-import moment from "moment";
 import Loading from "@/components/shared/loading";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -222,7 +205,9 @@ export default function Business() {
                     ) : (
                       <div className="rounded-lg bg-muted/50 p-2">
                         <p className="text-sm capitalize">
-                          {business?.business_type || "Not set"}
+                          {businessTypes.find(
+                            (type) => type.value === business?.business_type,
+                          )?.label || "Not set"}
                         </p>
                       </div>
                     )}
