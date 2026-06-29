@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Footer() {
   const message = encodeURIComponent(
     "Hi Aditya, I want to know more about Leado.",
@@ -6,10 +8,13 @@ export default function Footer() {
   return (
     <footer className="relative px-4 sm:px-6 py-5 border-t border-[var(--color-border)]">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-2 font-display font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-coral)]" />
-          Leado
-        </div>
+        <Image
+          src="/logo-horizontal-dark.svg"
+          alt="Leado"
+          width={110}
+          height={29}
+        />
+
         <div className="flex items-center gap-5 text-xs text-[var(--color-text-secondary)]">
           <a
             href="#"

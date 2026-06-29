@@ -17,6 +17,7 @@ interface DatePickerProps {
   minDate?: Date | null;
   onChange?: (date: Date | undefined) => void;
   disabled?: boolean;
+  disablePastDates?: boolean;
 }
 
 export function DatePicker({
@@ -24,6 +25,7 @@ export function DatePicker({
   minDate,
   onChange,
   disabled,
+  disablePastDates = false,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export function DatePicker({
           mode="single"
           selected={value ?? undefined}
           required
-          disabled={(date) => (minDate ? date < minDate : false)}
+          disabled={disablePastDates ? { before: new Date() } : undefined}
           onSelect={(date) => {
             onChange?.(date);
             setOpen(false);

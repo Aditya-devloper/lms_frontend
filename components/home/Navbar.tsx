@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -13,6 +14,17 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+
+  const handleAuthRedirect = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      window.location.href = "/dashboard";
+    } else {
+      router.push("/login");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,13 +45,14 @@ export default function Navbar() {
             : "bg-[#0a0d17]/20 backdrop-blur-md border border-white/5"
         }`}
       >
-        {" "}
-        <a
-          href="#"
-          className="flex items-center gap-2 font-display font-semibold text-lg"
-        >
-          <span className="w-2 h-2 rounded-full bg-[var(--color-coral)]" />
-          Leado
+        <a href="#" className="flex items-center">
+          <Image
+            src="/logo-horizontal-dark.svg"
+            alt="Leado"
+            width={132}
+            height={35}
+            priority
+          />
         </a>
         <div className="hidden md:flex items-center gap-8">
           {links.map((link) => (
@@ -54,8 +67,8 @@ export default function Navbar() {
         </div>
         <div className="hidden md:flex items-center gap-3">
           <a
-            href={"/dashboard"}
-            className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors px-3 py-2"
+            onClick={handleAuthRedirect}
+            className="text-sm cursor-pointer text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors px-3 py-2"
           >
             Log in
           </a>
@@ -90,7 +103,7 @@ export default function Navbar() {
           ))}
           <div className="h-[1px] bg-[var(--color-border)]" />
           <a
-            href={"/dashboard"}
+            onClick={handleAuthRedirect}
             className="text-sm text-[var(--color-text-secondary)]"
           >
             Log in

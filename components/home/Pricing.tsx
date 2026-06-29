@@ -1,4 +1,7 @@
+"use client";
+
 import { Check, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const included = [
   "Unlimited leads",
@@ -10,6 +13,18 @@ const included = [
 ];
 
 export default function Pricing() {
+  const router = useRouter();
+
+  const handleAuthRedirect = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      window.location.href = "/dashboard";
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <section id="pricing" className="relative px-4 sm:px-6 py-20">
       <div className="max-w-3xl mx-auto">
@@ -67,8 +82,8 @@ export default function Pricing() {
           </div>
 
           <a
-            href={"/dashboard"}
-            className="relative w-full font-medium bg-[var(--color-coral)] text-white rounded-full px-6 py-3.5 flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+            onClick={handleAuthRedirect}
+            className="relative w-full cursor-pointer font-medium bg-[var(--color-coral)] text-white rounded-full px-6 py-3.5 flex items-center justify-center gap-2 hover:brightness-110 transition-all"
           >
             Start your 14-day free trial
             <ArrowRight size={16} />

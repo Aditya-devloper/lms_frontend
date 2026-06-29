@@ -202,6 +202,7 @@ export default function LeadForm() {
                           follow_up_date: date ?? null,
                         }))
                       }
+                      disablePastDates={true}
                     />
                   </div>
                   <div>

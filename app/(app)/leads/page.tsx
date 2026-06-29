@@ -21,10 +21,19 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { exportLeads, getLeads } from "@/services/services";
+import { deleteLead, exportLeads, getLeads } from "@/services/services";
 import Loading from "@/components/shared/loading";
 import moment from "moment";
-import { Edit, Eye, Filter, X, CalendarIcon, Download } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  Filter,
+  X,
+  CalendarIcon,
+  Download,
+  Trash2,
+  Inbox,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +45,7 @@ import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/app/(shared)/components/DatePicker";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { DeleteConfirm } from "@/app/(shared)/components/DeleteConfirm";
 
 const statusColors: Record<string, string> = {
   new: "bg-blue-100 text-blue-700",
@@ -51,6 +61,9 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletedId, setDeletedId] = useState<null | string>(null);
+  const [btnDisable, setBtnDisable] = useState(false);
 
   const [filters, setFilters] = useState({
     status: "",
@@ -188,6 +201,25 @@ export default function LeadsPage() {
       );
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setBtnDisable(true);
+    try {
+      const res = await deleteLead({ id: deletedId });
+      if (res.data.status) {
+        toast.success(res.data.message);
+        setIsDeleting(false);
+        setDeletedId(null);
+        await fetchLeads();
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || error?.message || "Can't delete lead",
+      );
+    } finally {
+      setBtnDisable(false);
     }
   };
 
@@ -429,10 +461,18 @@ export default function LeadsPage() {
                 </TableHeader>
 
                 <TableBody>
-                  {leads.length === 0 ? (
+                  {leads.length == 0 ? (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center pt-6">
-                        No leads found.
+                      <TableCell colSpan={10} className="h-60">
+                        <div className="flex flex-col items-center justify-center text-center space-y-4">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                            <Inbox className="h-8 w-8 text-muted-foreground" />
+                          </div>
+
+                          <h3 className="text-lg font-semibold">
+                            No leads available
+                          </h3>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -482,10 +522,24 @@ export default function LeadsPage() {
                                 variant={"outline"}
                                 size={"icon-xs"}
                                 title="edit"
+                                className="hover:bg-blue-50"
                               >
                                 <Edit className="h-5 w-5 text-blue-500" />
                               </Button>
                             </Link>
+                            <Button
+                              variant={"outline"}
+                              size={"icon-xs"}
+                              title="delete"
+                              className="hover:bg-red-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDeleting(true);
+                                setDeletedId(lead._id);
+                              }}
+                            >
+                              <Trash2 className="h-5 w-5 text-red-500" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -497,6 +551,15 @@ export default function LeadsPage() {
           </Card>
         </div>
       )}
+
+      <DeleteConfirm
+        open={isDeleting}
+        onClose={() => setIsDeleting(false)}
+        onConfirm={handleDelete}
+        title="Delete Lead"
+        description="Are you sure you want to delete this lead?"
+        disabled={btnDisable}
+      />
     </>
   );
 }

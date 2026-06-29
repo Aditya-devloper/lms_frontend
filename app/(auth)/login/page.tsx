@@ -10,20 +10,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
 import { ArrowRight, Lock, Mail } from "lucide-react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      router.replace("/dashboard");
-    }
-  }, [router]);
 
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,11 +86,14 @@ export default function LoginPage() {
       />
 
       <CardHeader className="text-center space-y-2 pb-2 relative">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-coral)]" />
-          <span className="font-display font-semibold text-base text-[var(--color-text-primary)]">
-            Leado
-          </span>
+        <div className="flex items-center justify-center">
+          <Image
+            src="/logo-horizontal-dark.svg"
+            alt="Leado"
+            width={122}
+            height={25}
+            priority
+          />
         </div>
         <h2 className="text-lg font-display font-semibold text-[var(--color-text-primary)]">
           Sign in to your account

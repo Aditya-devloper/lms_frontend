@@ -62,8 +62,8 @@ export const exportLeads = (payload: any) =>
 export const getLeadById = (id: string, payload: any) =>
   api.post(`/lead/getById/${id}`, payload);
 
-export const deleteLead = (id: string, payload: any) =>
-  api.post(`/lead/delete/${id}`, payload);
+export const deleteLead = (payload: any) =>
+  api.post(`/lead/deleteLead`, payload);
 
 // dasboard
 export const getDashboardData = (payload: any) =>

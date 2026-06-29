@@ -4,23 +4,30 @@ import { ReactNode, useEffect, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/shared/loading";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     if (!token) {
       router.replace("/login");
+      return;
     }
 
-    if (!user) {
+    const user = localStorage.getItem("user");
+
+    if (!user && window.location.pathname !== "/setup-business") {
       router.replace("/setup-business");
+      return;
     }
-  }, []);
+
+    setChecking(false);
+  }, [router]);
 
   useEffect(() => {
     if (window.innerWidth >= 1024) {
@@ -29,6 +36,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       setSidebarOpen(false); // mobile
     }
   }, []);
+
+  if (checking) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

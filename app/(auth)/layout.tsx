@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="absolute inset-0 noise-overlay" />
 
       <div
-        className={`relative z-10 flex items-center justify-center px-4 py-12 ${isLoginPage && "min-h-screen"}`}
+        className={`relative z-10 flex items-center justify-center px-4 py-12 ${isLoginPage ? "min-h-screen" : ""}`}
       >
         {children}
       </div>

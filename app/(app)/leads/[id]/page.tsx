@@ -276,9 +276,9 @@ const LeadDetail = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold flex items-center gap-2">
+          <h1 className="text-2xl font-semibold flex items-center gap-3">
             <ArrowLeft
-              className="h-4.5 w-4.5 mt-1 cursor-pointer"
+              className="h-5 w-5 cursor-pointer"
               onClick={() => router.back()}
             />
             Lead Details

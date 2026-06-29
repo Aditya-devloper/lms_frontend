@@ -17,6 +17,7 @@ interface DeleteConfirmProps {
   description: string;
   onConfirm: () => void;
   isLogout?: boolean;
+  disabled?: boolean;
 }
 
 export const DeleteConfirm = ({
@@ -26,6 +27,7 @@ export const DeleteConfirm = ({
   description,
   onConfirm,
   isLogout = false,
+  disabled = false,
 }: DeleteConfirmProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -38,7 +40,12 @@ export const DeleteConfirm = ({
           <Button size={"sm"} variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button size={"sm"} variant="destructive" onClick={onConfirm}>
+          <Button
+            size={"sm"}
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={disabled}
+          >
             {isLogout ? "Logout" : "Delete"}
           </Button>
         </div>

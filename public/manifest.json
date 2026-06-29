@@ -1,0 +1,12 @@
+{
+  "name": "Leado",
+  "short_name": "Leado",
+  "description": "Track leads, set follow-up reminders, and close more deals.",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0A0D17",
+  "background_color": "#0A0D17",
+  "display": "standalone"
+}

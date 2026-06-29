@@ -1,7 +1,21 @@
+"use client";
+
 import { ArrowRight } from "lucide-react";
 import PipelineVisual from "./PipelineVisual";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+  const router = useRouter();
+
+  const handleAuthRedirect = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      window.location.href = "/dashboard";
+    } else {
+      router.push("/login");
+    }
+  };
   return (
     <section className="relative pt-36 pb-20 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto text-center">
@@ -26,8 +40,8 @@ export default function Hero() {
 
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
-            href={"/dashboard"}
-            className="w-full sm:w-auto font-medium bg-[var(--color-coral)] text-white rounded-full px-6 py-3.5 flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+            onClick={handleAuthRedirect}
+            className="w-full sm:w-auto cursor-pointer font-medium bg-[var(--color-coral)] text-white rounded-full px-6 py-3.5 flex items-center justify-center gap-2 hover:brightness-110 transition-all"
           >
             Start free — no card needed
             <ArrowRight size={16} />

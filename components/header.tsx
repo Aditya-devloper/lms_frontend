@@ -16,6 +16,7 @@ import { MEDIA_URL } from "@/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { DeleteConfirm } from "@/app/(shared)/components/DeleteConfirm";
+import Image from "next/image";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -76,19 +77,18 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white border-b flex items-center justify-between px-3 sm:px-6">
-        <div className="flex items-center gap-5 sm:gap-20">
+        <div className="flex items-center sm:gap-12">
           <div
             className="flex items-center gap-1 cursor-pointer"
             onClick={() => router.push("/dashboard")}
           >
-            <img
-              src="/logo.png"
-              alt="logo"
-              className="h-12 w-12 object-contain"
+            <Image
+              src="/logo-horizontal-light.svg"
+              alt="Leado"
+              width={150}
+              height={35}
+              priority
             />
-            <h1 className="text-2xl pb-1 font-semibold tracking-tight text-[#026af9]">
-              Leado
-            </h1>
           </div>
           <Button variant={"ghost"} size={"icon"} onClick={onToggleSidebar}>
             <Menu className="w-5 h-5" />
@@ -97,7 +97,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="h-8 w-8 object-cover shadow-xs">
+            <Avatar className="h-8 w-8 object-cover shadow-xs cursor-pointer">
               <AvatarImage
                 src={
                   user?.image

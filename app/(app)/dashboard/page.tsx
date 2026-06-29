@@ -179,10 +179,10 @@ export default function DashboardPage() {
                   {dashboardData.todayFollowUps.map((lead: any) => (
                     <div
                       key={lead._id}
-                      className="flex flex-col gap-3 px-4 py-4 hover:bg-muted/50 transition-colors sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-3 px-4 py-4 hover:bg-muted/50 transition-colors sm:flex-row sm:items-start sm:justify-between"
                     >
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 justify-between sm:justify-normal">
                           <h3 className="font-medium">
                             {lead.name || "Unnamed Lead"}
                           </h3>
@@ -207,31 +207,33 @@ export default function DashboardPage() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between sm:justify-center gap-3">
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3" />
                           {moment(lead.follow_up_date).format("MMM D, YYYY")}
                         </div>
-                        {lead.phone && (
+                        <div className="flex items-center gap-3">
+                          {lead.phone && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handlePhoneClick(lead.phone)}
+                              className="gap-1"
+                            >
+                              <Phone className="h-3 w-3" />
+                              <span className="hidden sm:inline">Call</span>
+                            </Button>
+                          )}
                           <Button
                             size="sm"
-                            variant="outline"
-                            onClick={() => handlePhoneClick(lead.phone)}
+                            variant="secondary"
+                            onClick={() => router.push(`/leads/${lead._id}`)}
                             className="gap-1"
                           >
-                            <Phone className="h-3 w-3" />
-                            <span className="hidden sm:inline">Call</span>
+                            <Eye className="h-3 w-3" />
+                            <span className="hidden sm:inline">View</span>
                           </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => router.push(`/leads/${lead._id}`)}
-                          className="gap-1"
-                        >
-                          <Eye className="h-3 w-3" />
-                          <span className="hidden sm:inline">View</span>
-                        </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
